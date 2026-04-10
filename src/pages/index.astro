@@ -24,9 +24,84 @@ const heroVideos = [
 ---
 
 <Layout>
-  <VideoCarousel videos={heroVideos} title="BOND" subtitle="THE INVISIBLE LINK">
-    <HeroNavbar slot="navbar" />
-  </VideoCarousel>
-  <LookSection />
-  <SiteFooter />
+  <section data-scroll-section>
+    <VideoCarousel videos={heroVideos} title="BOND" subtitle="THE INVISIBLE LINK">
+      <HeroNavbar slot="navbar" />
+    </VideoCarousel>
+  </section>
+
+  <section data-scroll-section>
+    <LookSection />
+  </section>
+
+  <section data-scroll-section>
+    <SiteFooter />
+  </section>
 </Layout>
+
+<script>
+  // @ts-nocheck
+  const sections = Array.from(document.querySelectorAll("[data-scroll-section]"));
+  let scrollLocked = false;
+  let wheelAccumulator = 0;
+
+  function getClosestSectionIndex() {
+    let closestIndex = 0;
+    let minDistance = Number.POSITIVE_INFINITY;
+
+    sections.forEach((section, index) => {
+      const distance = Math.abs(section.getBoundingClientRect().top);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestIndex = index;
+      }
+    });
+
+    return closestIndex;
+  }
+
+  function scrollToSection(index) {
+    const target = sections[index];
+    if (!target) return;
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  window.addEventListener(
+    "wheel",
+    (e) => {
+      if (sections.length < 2) return;
+
+      // While a snap transition is running, consume wheel input so native scroll
+      // doesn't fight the section snapping behavior.
+      if (scrollLocked) {
+        e.preventDefault();
+        wheelAccumulator = 0;
+        return;
+      }
+
+      wheelAccumulator += e.deltaY;
+
+      // Ignore micro touchpad noise and only react to intentional gestures.
+      if (Math.abs(wheelAccumulator) < 45) return;
+
+      const direction = wheelAccumulator > 0 ? 1 : -1;
+      const currentIndex = getClosestSectionIndex();
+      const nextIndex = Math.min(Math.max(currentIndex + direction, 0), sections.length - 1);
+
+      wheelAccumulator = 0;
+
+      if (nextIndex === currentIndex) return;
+
+      e.preventDefault();
+      scrollLocked = true;
+      wheelAccumulator = 0;
+      scrollToSection(nextIndex);
+
+      window.setTimeout(() => {
+        scrollLocked = false;
+        wheelAccumulator = 0;
+      }, 700);
+    },
+    { passive: false }
+  );
+</script>
