@@ -1,11 +1,25 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import '../styles/global.css';
 import Layout from '../layouts/Layout.astro';
+import VideoCarousel from '../components/VideoCarousel.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Local hero videos from public/videos
+const heroVideos = [
+  {
+    src: '/videos/video_3.mp4'
+  },
+  {
+    src: '/videos/video_1.mp4'
+  },
+  {
+    src: '/videos/video_2.mp4'
+  },
+  {
+    src: '/videos/video_4.mp4'
+  }
+];
 ---
 
 <Layout>
-	<Welcome />
+	<VideoCarousel videos={heroVideos} title="BOND" subtitle="THE INVISIBLE LINK" />
 </Layout>

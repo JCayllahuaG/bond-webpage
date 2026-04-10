@@ -1,0 +1,359 @@
+---
+// Video carousel component with drag-to-swap functionality
+interface Props {
+  videos: Array<{
+    src: string;
+    poster?: string;
+  }>;
+  title?: string;
+  subtitle?: string;
+}
+
+const { 
+  videos = [],
+  title = "BLITZ",
+  subtitle = "GEAR THAT DOESN'T BREAK"
+} = Astro.props;
+
+const totalTicks = 73;
+const majorEvery = 6;
+const degreeLabels = Array.from({ length: 12 }, (_, i) => i * 30);
+const degreeToLeft = (degree: number) => `${((degree / 30) * majorEvery * 100) / (totalTicks - 1)}%`;
+const cardinalMarkers = [
+  { degree: 0, label: "N" },
+  { degree: 90, label: "E" },
+  { degree: 180, label: "S" },
+  { degree: 270, label: "O" },
+];
+---
+
+<div class="relative w-full h-screen overflow-hidden bg-black" id="video-carousel">
+  <!-- Video Container -->
+  <div class="relative w-full h-full">
+    {videos.map((video, index) => (
+      <video
+        class="carousel-video absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+        class:list={[{ "opacity-100": index === 0, "opacity-0 pointer-events-none": index !== 0 }]}
+        poster={video.poster}
+        preload="auto"
+        autoplay={index === 0}
+        playsinline
+        muted
+        loop
+      >
+        <source src={video.src} type="video/mp4" />
+      </video>
+    ))}
+  </div>
+
+  <!-- Hero Content Overlay -->
+  <div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center z-20">
+    <h1 class="text-7xl font-bold text-white mb-4 drop-shadow-lg">
+      {title}
+    </h1>
+    <p class="text-xl text-white tracking-widest drop-shadow-md">
+      {subtitle}
+    </p>
+  </div>
+
+  <!-- Navigation Overlay -->
+  <div class="pointer-events-none absolute inset-0 flex items-center justify-between px-8 z-40">
+    <button
+      class="pointer-events-auto text-white text-4xl opacity-20 hover:opacity-100 transition-opacity"
+      id="prev-btn"
+      aria-label="Previous video"
+    >
+      ‹
+    </button>
+    <button
+      class="pointer-events-auto text-white text-4xl opacity-20 hover:opacity-100 transition-opacity"
+      id="next-btn"
+      aria-label="Next video"
+    >
+      ›
+    </button>
+  </div>
+
+  <!-- Compass Wheel -->
+  <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-28 bg-linear-to-t from-black/70 via-black/30 to-transparent z-20">
+    <div class="absolute inset-x-0 bottom-10 flex justify-center px-4">
+      <div id="compass-viewport" class="compass-viewport relative w-full max-w-155 overflow-hidden">
+        <div class="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-linear-to-r from-black/85 via-black/45 to-transparent"></div>
+        <div class="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-linear-to-l from-black/85 via-black/45 to-transparent"></div>
+
+        <div id="compass-track" class="compass-track compass-ghost flex" style="width: 300%;">
+          {Array.from({ length: 3 }).map(() => (
+            <div class="compass-segment w-1/3 shrink-0">
+              <div class="relative mb-2 h-4 text-[10px] font-medium tracking-[0.16em] text-white/55">
+                {degreeLabels.map((deg, labelIndex) => (
+                  <span
+                    class="absolute top-0 -translate-x-1/2 whitespace-nowrap"
+                    style={{ left: degreeToLeft(deg) }}
+                  >
+                    {deg}
+                  </span>
+                ))}
+              </div>
+
+              <div class="flex items-end justify-between gap-0.5">
+                {Array.from({ length: totalTicks }).map((_, i) => {
+                  if (i === totalTicks - 1) {
+                    // Prevent the duplicated 360deg tick from overlapping the 0deg tick.
+                    return <span class="block h-0 w-px opacity-0" aria-hidden="true" />;
+                  }
+
+                  const isMajor = i % majorEvery === 0;
+                  return (
+                    <span
+                      class:list={[
+                        "block w-px rounded-full bg-white",
+                        {
+                          "h-6 opacity-95": isMajor,
+                          "h-3 opacity-55": !isMajor,
+                        },
+                      ]}
+                    />
+                  );
+                })}
+              </div>
+
+              <div class="relative mt-2 h-4 text-sm text-white/60">
+                {cardinalMarkers.map((marker) => (
+                  <span
+                    class="absolute top-0 -translate-x-1/2 whitespace-nowrap text-center"
+                    style={{ left: degreeToLeft(marker.degree) }}
+                  >
+                    {marker.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Center marker -->
+    <div class="absolute bottom-7 left-1/2 -translate-x-1/2">
+      <svg viewBox="0 0 24 24" fill="white" class="h-3 w-3 drop-shadow">
+        <path d="M12 5l7 12h-14z" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- Draggable area indicator -->
+  <div class="absolute inset-0 z-30 cursor-grab active:cursor-grabbing" id="drag-area" />
+</div>
+
+<script>
+  // @ts-nocheck
+  const state = {
+    currentIndex: 0,
+    isDragging: false,
+    startX: 0,
+    dragDelta: 0,
+    compassBaseOffset: 0,
+    compassStep: 0,
+    compassStartOffset: 0,
+    compassSegmentWidth: 0,
+    videos: /** @type {HTMLVideoElement[]} */ ([]),
+    threshold: 8,
+  };
+
+  function initCarousel() {
+    const carousel = document.getElementById("video-carousel");
+    if (!carousel) return;
+
+    state.videos = /** @type {HTMLVideoElement[]} */ (
+      Array.from(carousel.querySelectorAll(".carousel-video"))
+    );
+
+    if (state.videos.length === 0) return;
+
+    // Play first video
+    state.videos[0]?.play().catch(() => {
+      // Autoplay might be blocked, user interaction required
+    });
+
+    // Setup event listeners
+    setupPointerDrag();
+    setupNavigationButtons();
+    setupCompassResize();
+    updateCompassPosition(true);
+  }
+
+  function setupCompassResize() {
+    const viewport = document.getElementById("compass-viewport");
+    if (!viewport) return;
+
+    const refreshWidth = () => {
+      state.compassSegmentWidth = viewport.clientWidth;
+      state.compassStep = state.compassSegmentWidth / 4;
+      state.compassStartOffset = state.compassSegmentWidth / 2;
+      updateCompassPosition(false);
+    };
+
+    refreshWidth();
+    window.addEventListener("resize", refreshWidth);
+  }
+
+  function setupPointerDrag() {
+    const dragArea = document.getElementById("drag-area");
+    if (!dragArea) return;
+
+    dragArea.addEventListener("pointerdown", handleDragStart);
+    dragArea.addEventListener("pointermove", handleDragMove);
+    dragArea.addEventListener("pointerup", handleDragEnd);
+    dragArea.addEventListener("pointercancel", handleDragEnd);
+  }
+
+  /** @param {PointerEvent} e */
+  function handleDragStart(e) {
+    if (state.videos.length < 2) return;
+
+    state.isDragging = true;
+    state.startX = e.clientX;
+    state.dragDelta = 0;
+    updateCompassPosition(false);
+    e.currentTarget?.setPointerCapture?.(e.pointerId);
+  }
+
+  /** @param {PointerEvent} e */
+  function handleDragMove(e) {
+    if (!state.isDragging) return;
+
+    const delta = e.clientX - state.startX;
+    const diff = -delta;
+    state.dragDelta = delta;
+    updateCompassPosition(false);
+
+    if (Math.abs(diff) > state.threshold) {
+      const dragArea = document.getElementById("drag-area");
+      if (dragArea) {
+        dragArea.style.opacity = "0.08";
+      }
+    }
+  }
+
+  /** @param {PointerEvent} e */
+  function handleDragEnd(e) {
+    if (!state.isDragging) return;
+    state.isDragging = false;
+
+    const dragArea = document.getElementById("drag-area");
+    if (dragArea) {
+      dragArea.style.opacity = "0";
+    }
+
+    const movedDistance = Math.abs(state.dragDelta);
+    state.dragDelta = 0;
+
+    if (movedDistance < state.threshold) {
+      updateCompassPosition(true);
+      return;
+    }
+
+    advanceByDrag();
+  }
+
+  function advanceByDrag() {
+    if (state.videos.length < 2) return;
+    const nextIndex = (state.currentIndex + 1) % state.videos.length;
+    switchToVideo(nextIndex, -1);
+  }
+
+  function setupNavigationButtons() {
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+
+    prevBtn?.addEventListener("click", prevVideo);
+    nextBtn?.addEventListener("click", nextVideo);
+  }
+
+  function nextVideo() {
+    if (state.videos.length < 2) return;
+    const nextIndex = (state.currentIndex + 1) % state.videos.length;
+    switchToVideo(nextIndex, -1);
+  }
+
+  function prevVideo() {
+    if (state.videos.length < 2) return;
+    const prevIndex =
+      (state.currentIndex - 1 + state.videos.length) % state.videos.length;
+    switchToVideo(prevIndex, 1);
+  }
+
+  /** @param {number} index */
+  /** @param {number} direction */
+  function switchToVideo(index, direction = 0) {
+    if (index === state.currentIndex) return;
+
+    // Stop current video
+    const currentVideo = state.videos[state.currentIndex];
+    if (currentVideo) {
+      currentVideo.pause();
+      currentVideo.currentTime = 0;
+    }
+
+    // Update visibility
+    state.videos.forEach((video, i) => {
+      if (i === index) {
+        video.classList.remove("opacity-0", "pointer-events-none");
+        video.classList.add("opacity-100");
+        video.play().catch(() => {
+          // Handle autoplay restrictions
+        });
+      } else {
+        video.classList.remove("opacity-100");
+        video.classList.add("opacity-0", "pointer-events-none");
+      }
+    });
+
+    state.currentIndex = index;
+    state.compassBaseOffset += direction * state.compassStep;
+    state.dragDelta = 0;
+    updateCompassPosition(true);
+  }
+
+  /** @param {boolean} animate */
+  function updateCompassPosition(animate) {
+    const compassTrack = document.getElementById("compass-track");
+    const viewport = document.getElementById("compass-viewport");
+    if (!compassTrack || !viewport) return;
+
+    const segmentWidth = state.compassSegmentWidth || viewport.clientWidth;
+    if (!segmentWidth) return;
+
+    const liveDragOffset = state.dragDelta * 0.35;
+    const raw = state.compassStartOffset + state.compassBaseOffset + liveDragOffset;
+    const wrapped = ((raw % segmentWidth) + segmentWidth) % segmentWidth;
+    const x = wrapped - segmentWidth;
+
+    compassTrack.style.transition = animate
+      ? "transform 360ms cubic-bezier(0.22, 1, 0.36, 1)"
+      : "none";
+    compassTrack.style.transform = `translate3d(${x}px, 0, 0)`;
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initCarousel);
+  } else {
+    initCarousel();
+  }
+</script>
+
+<style>
+  .compass-viewport {
+    mask-image: linear-gradient(to right, transparent 0%, black 14%, black 86%, transparent 100%);
+  }
+
+  .compass-track {
+    will-change: transform;
+  }
+
+  .compass-ghost {
+    mix-blend-mode: screen;
+    opacity: 0.9;
+  }
+</style>
