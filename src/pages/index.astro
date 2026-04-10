@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Layout from '../layouts/Layout.astro';
 import VideoCarousel from '../components/VideoCarousel.astro';
 import HeroNavbar from '../components/HeroNavbar.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 
 // Local hero videos from public/videos
 const heroVideos = [
@@ -25,4 +26,5 @@ const heroVideos = [
   <VideoCarousel videos={heroVideos} title="BOND" subtitle="THE INVISIBLE LINK">
     <HeroNavbar slot="navbar" />
   </VideoCarousel>
+  <SiteFooter />
 </Layout>

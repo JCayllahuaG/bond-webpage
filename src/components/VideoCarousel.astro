@@ -207,7 +207,8 @@ const cardinalMarkers = [
 
   function setupCustomCursor() {
     const cursor = document.getElementById("custom-cursor");
-    if (!cursor) return;
+    const carousel = document.getElementById("video-carousel");
+    if (!cursor || !carousel) return;
 
     const supportsFinePointer = window.matchMedia("(pointer: fine)").matches;
     if (!supportsFinePointer) return;
@@ -217,9 +218,13 @@ const cardinalMarkers = [
       cursor.style.opacity = "1";
     };
 
-    window.addEventListener("pointermove", (e) => {
+    carousel.addEventListener("pointermove", (e) => {
       if (e.pointerType !== "mouse") return;
       setCursorPosition(e.clientX, e.clientY);
+    });
+
+    carousel.addEventListener("pointerleave", () => {
+      cursor.style.opacity = "0";
     });
 
     window.addEventListener("blur", () => {
