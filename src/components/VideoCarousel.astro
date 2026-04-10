@@ -286,7 +286,8 @@ const cardinalMarkers = [
       dragArea.style.opacity = "0";
     }
 
-    const movedDistance = Math.abs(state.dragDelta);
+    const finalDragDelta = state.dragDelta;
+    const movedDistance = Math.abs(finalDragDelta);
     state.dragDelta = 0;
 
     if (movedDistance < state.threshold) {
@@ -294,13 +295,22 @@ const cardinalMarkers = [
       return;
     }
 
-    advanceByDrag();
+    advanceByDrag(finalDragDelta);
   }
 
-  function advanceByDrag() {
+  /** @param {number} dragDelta */
+  function advanceByDrag(dragDelta) {
     if (state.videos.length < 2) return;
-    const nextIndex = (state.currentIndex + 1) % state.videos.length;
-    switchToVideo(nextIndex, -1);
+
+    // Drag direction now matches compass direction:
+    // drag right => +90deg, drag left => -90deg.
+    const visualDirection = dragDelta >= 0 ? 1 : -1;
+    const targetIndex =
+      dragDelta >= 0
+        ? (state.currentIndex + 1) % state.videos.length
+        : (state.currentIndex - 1 + state.videos.length) % state.videos.length;
+
+    switchToVideo(targetIndex, visualDirection);
   }
 
   function setupNavigationButtons() {
