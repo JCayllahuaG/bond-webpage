@@ -170,6 +170,8 @@ const cardinalMarkers = [
     compassStep: 0,
     compassStartOffset: 0,
     compassSegmentWidth: 0,
+    lastRenderedX: NaN,
+    lastStepDirection: 0,
     videos: /** @type {HTMLVideoElement[]} */ ([]),
     threshold: 8,
   };
@@ -361,6 +363,7 @@ const cardinalMarkers = [
     });
 
     state.currentIndex = index;
+    state.lastStepDirection = direction;
     state.compassBaseOffset += direction * state.compassStep;
     state.dragDelta = 0;
     updateCompassPosition(true);
@@ -378,12 +381,38 @@ const cardinalMarkers = [
     const liveDragOffset = state.dragDelta * 0.35;
     const raw = state.compassStartOffset + state.compassBaseOffset + liveDragOffset;
     const wrapped = ((raw % segmentWidth) + segmentWidth) % segmentWidth;
-    const x = wrapped - segmentWidth;
+    const baseX = wrapped - segmentWidth;
+
+    let x = baseX;
+    if (animate && Number.isFinite(state.lastRenderedX)) {
+      const candidates = [baseX - segmentWidth, baseX, baseX + segmentWidth];
+
+      if (state.lastStepDirection < 0) {
+        const leftCandidates = candidates.filter((c) => c <= state.lastRenderedX + 0.0001);
+        if (leftCandidates.length > 0) {
+          x = leftCandidates.reduce((best, curr) =>
+            Math.abs(curr - state.lastRenderedX) < Math.abs(best - state.lastRenderedX) ? curr : best
+          );
+        }
+      } else if (state.lastStepDirection > 0) {
+        const rightCandidates = candidates.filter((c) => c >= state.lastRenderedX - 0.0001);
+        if (rightCandidates.length > 0) {
+          x = rightCandidates.reduce((best, curr) =>
+            Math.abs(curr - state.lastRenderedX) < Math.abs(best - state.lastRenderedX) ? curr : best
+          );
+        }
+      } else {
+        x = candidates.reduce((best, curr) =>
+          Math.abs(curr - state.lastRenderedX) < Math.abs(best - state.lastRenderedX) ? curr : best
+        );
+      }
+    }
 
     compassTrack.style.transition = animate
       ? "transform 360ms cubic-bezier(0.22, 1, 0.36, 1)"
       : "none";
     compassTrack.style.transform = `translate3d(${x}px, 0, 0)`;
+    state.lastRenderedX = x;
   }
 
   // Initialize when DOM is ready
