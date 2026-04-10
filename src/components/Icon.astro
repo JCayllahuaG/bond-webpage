@@ -17,7 +17,8 @@ const {
   label,
 } = Astro.props;
 
-const iconPath = `/icons/${name}.svg`;
+const R2_BASE = "https://pub-77a3acdd380842359b5b76ca4772fe64.r2.dev/assets/public";
+const iconPath = `${R2_BASE}/icons/${name}.svg`;
 const ariaHidden = decorative ? "true" : undefined;
 const ariaLabel = decorative ? undefined : (label ?? name);
 ---
