@@ -9,6 +9,8 @@ interface Props {
   subtitle?: string;
 }
 
+import Icon from './Icon.astro';
+
 const { 
   videos = [],
   title = "BLITZ",
@@ -25,9 +27,11 @@ const cardinalMarkers = [
   { degree: 180, label: "S" },
   { degree: 270, label: "O" },
 ];
+
+const navLinkClass = "text-base leading-7 font-light tracking-wide text-white/90 transition hover:text-white";
 ---
 
-<div class="relative w-full h-screen overflow-hidden bg-black" id="video-carousel">
+<div class="relative h-screen w-full overflow-hidden bg-black cursor-none" id="video-carousel">
   <!-- Video Container -->
   <div class="relative w-full h-full">
     {videos.map((video, index) => (
@@ -45,6 +49,24 @@ const cardinalMarkers = [
       </video>
     ))}
   </div>
+
+  <!-- Top Navbar -->
+  <header class="absolute inset-x-0 top-0 z-50 px-4 pt-5 sm:px-8">
+    <nav class="mx-auto flex w-full items-center justify-between text-white">
+      <div class="flex items-center gap-7 sm:gap-8 md:gap-10">
+        <a href="/" class="flex items-center" aria-label="Bond home">
+          <Icon name="bond_logo" size={28} color="#ffffff" class="opacity-95" decorative={false} label="Bond" />
+        </a>
+        <a href="#" class={navLinkClass}>NEW</a>
+        <a href="#" class={navLinkClass}>SHOP ALL</a>
+        <a href="#" class={`hidden sm:inline ${navLinkClass}`}>JOURNAL</a>
+        <a href="#" class={`hidden sm:inline ${navLinkClass}`}>STORIES</a>
+        <a href="#" class={`hidden sm:inline ${navLinkClass}`}>SEARCH</a>
+      </div>
+
+      <a href="#" class={navLinkClass}>CART (0)</a>
+    </nav>
+  </header>
 
   <!-- Hero Content Overlay -->
   <div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center z-20">
@@ -142,7 +164,14 @@ const cardinalMarkers = [
   </div>
 
   <!-- Draggable area indicator -->
-  <div class="absolute inset-0 z-30 cursor-grab active:cursor-grabbing" id="drag-area" />
+  <div class="absolute inset-0 z-30" id="drag-area" />
+
+  <!-- Custom Cursor -->
+  <div
+    id="custom-cursor"
+    class="pointer-events-none fixed left-0 top-0 z-70 h-7 w-7 rounded-full border border-white/30 bg-white/18 opacity-0 backdrop-blur-xs transition-[opacity,transform] duration-150 ease-out"
+    aria-hidden="true"
+  ></div>
 </div>
 
 <script>
@@ -179,7 +208,34 @@ const cardinalMarkers = [
     setupPointerDrag();
     setupNavigationButtons();
     setupCompassResize();
+    setupCustomCursor();
     updateCompassPosition(true);
+  }
+
+  function setupCustomCursor() {
+    const cursor = document.getElementById("custom-cursor");
+    if (!cursor) return;
+
+    const supportsFinePointer = window.matchMedia("(pointer: fine)").matches;
+    if (!supportsFinePointer) return;
+
+    const setCursorPosition = (x, y) => {
+      cursor.style.transform = `translate3d(${x - 14}px, ${y - 14}px, 0)`;
+      cursor.style.opacity = "1";
+    };
+
+    window.addEventListener("pointermove", (e) => {
+      if (e.pointerType !== "mouse") return;
+      setCursorPosition(e.clientX, e.clientY);
+    });
+
+    window.addEventListener("blur", () => {
+      cursor.style.opacity = "0";
+    });
+
+    document.addEventListener("mouseleave", () => {
+      cursor.style.opacity = "0";
+    });
   }
 
   function setupCompassResize() {
@@ -344,6 +400,13 @@ const cardinalMarkers = [
 </script>
 
 <style>
+  @media (pointer: fine) {
+    #video-carousel,
+    #video-carousel * {
+      cursor: none !important;
+    }
+  }
+
   .compass-viewport {
     mask-image: linear-gradient(to right, transparent 0%, black 14%, black 86%, transparent 100%);
   }
