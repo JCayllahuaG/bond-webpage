@@ -9,7 +9,7 @@ interface Props {
   subtitle?: string;
 }
 
-import Icon from './Icon.astro';
+import HeroNavbar from './HeroNavbar.astro';
 
 const { 
   videos = [],
@@ -27,8 +27,6 @@ const cardinalMarkers = [
   { degree: 180, label: "S" },
   { degree: 270, label: "O" },
 ];
-
-const navLinkClass = "text-base leading-7 font-light tracking-wide text-white/90 transition hover:text-white";
 ---
 
 <div class="relative h-screen w-full overflow-hidden bg-black cursor-none" id="video-carousel">
@@ -51,22 +49,9 @@ const navLinkClass = "text-base leading-7 font-light tracking-wide text-white/90
   </div>
 
   <!-- Top Navbar -->
-  <header class="absolute inset-x-0 top-0 z-50 px-4 pt-5 sm:px-8">
-    <nav class="mx-auto flex w-full items-center justify-between text-white">
-      <div class="flex items-center gap-7 sm:gap-8 md:gap-10">
-        <a href="/" class="flex items-center" aria-label="Bond home">
-          <Icon name="bond_logo" size={28} color="#ffffff" class="opacity-95" decorative={false} label="Bond" />
-        </a>
-        <a href="#" class={navLinkClass}>NEW</a>
-        <a href="#" class={navLinkClass}>SHOP ALL</a>
-        <a href="#" class={`hidden sm:inline ${navLinkClass}`}>JOURNAL</a>
-        <a href="#" class={`hidden sm:inline ${navLinkClass}`}>STORIES</a>
-        <a href="#" class={`hidden sm:inline ${navLinkClass}`}>SEARCH</a>
-      </div>
-
-      <a href="#" class={navLinkClass}>CART (0)</a>
-    </nav>
-  </header>
+  <slot name="navbar">
+    <HeroNavbar />
+  </slot>
 
   <!-- Hero Content Overlay -->
   <div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center z-20">
@@ -401,8 +386,8 @@ const navLinkClass = "text-base leading-7 font-light tracking-wide text-white/90
 
 <style>
   @media (pointer: fine) {
-    #video-carousel,
-    #video-carousel * {
+    :global(#video-carousel),
+    :global(#video-carousel *) {
       cursor: none !important;
     }
   }
