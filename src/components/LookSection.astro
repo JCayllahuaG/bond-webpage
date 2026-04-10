@@ -18,7 +18,7 @@ const {
 } = Astro.props;
 ---
 
-<section class="bg-[#ececec] px-5 py-10 sm:px-8 sm:py-14 lg:px-12 lg:py-16">
+<section id="look-section" class="bg-[#ececec] px-5 py-10 sm:px-8 sm:py-14 lg:px-12 lg:py-16">
   <div class="mx-auto grid w-full max-w-375 gap-8 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-14">
     <div class="max-w-190">
       <h2 class="footer-serif text-[30px] uppercase leading-none text-[#111] sm:text-[40px] md:text-[48px] lg:text-[56px]">
@@ -47,9 +47,56 @@ const {
       />
     </div>
   </div>
+
+  <div
+    id="look-custom-cursor"
+    class="pointer-events-none fixed left-0 top-0 z-70 h-7 w-7 rounded-full border border-black/30 bg-black/15 opacity-0 backdrop-blur-xs transition-[opacity,transform] duration-150 ease-out"
+    aria-hidden="true"
+  ></div>
 </section>
 
+<script>
+  // @ts-nocheck
+  const section = document.getElementById("look-section");
+  const cursor = document.getElementById("look-custom-cursor");
+
+  if (section && cursor) {
+    const supportsFinePointer = window.matchMedia("(pointer: fine)").matches;
+
+    if (supportsFinePointer) {
+      /**
+       * @param {number} x
+       * @param {number} y
+       */
+      function setCursorPosition(x, y) {
+        cursor.style.transform = `translate3d(${x - 14}px, ${y - 14}px, 0)`;
+        cursor.style.opacity = "1";
+      }
+
+      section.addEventListener("pointermove", (e) => {
+        if (e.pointerType !== "mouse") return;
+        setCursorPosition(e.clientX, e.clientY);
+      });
+
+      section.addEventListener("pointerleave", () => {
+        cursor.style.opacity = "0";
+      });
+
+      window.addEventListener("blur", () => {
+        cursor.style.opacity = "0";
+      });
+    }
+  }
+</script>
+
 <style>
+  @media (pointer: fine) {
+    :global(#look-section),
+    :global(#look-section *) {
+      cursor: none !important;
+    }
+  }
+
   .footer-serif {
     font-family: "Bodoni Moda", serif;
     font-optical-sizing: auto;
