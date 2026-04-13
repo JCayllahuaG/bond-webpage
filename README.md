@@ -41,6 +41,14 @@ All commands are run from the root of the project, from a terminal:
 | `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `bun astro -- --help` | Get help using the Astro CLI                     |
 
+## Package Manager
+
+Use Bun only for install and build steps in local and CI.
+
+- Install dependencies with `bun install`
+- Build with `bun run build`
+- Avoid mixing `npm install` / `npm ci` with Bun commands to prevent optional dependency mismatches (for example Rollup native binaries).
+
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
