@@ -7,6 +7,7 @@ interface Props {
   }>;
   title?: string;
   subtitle?: string;
+  fallbackImage?: string;
 }
 
 import HeroNavbar from './HeroNavbar.astro';
@@ -15,7 +16,8 @@ import Icon from './Icon.astro';
 const { 
   videos = [],
   title = "BLITZ",
-  subtitle = "GEAR THAT DOESN'T BREAK"
+  subtitle = "GEAR THAT DOESN'T BREAK",
+  fallbackImage,
 } = Astro.props;
 
 const totalTicks = 73;
@@ -33,12 +35,27 @@ const cardinalMarkers = [
 <div class="relative h-screen w-full overflow-hidden bg-black cursor-none" id="video-carousel">
   <!-- Video Container -->
   <div class="relative w-full h-full">
+    {
+      (fallbackImage || videos[0]?.poster) && (
+        <img
+          id="hero-media-fallback"
+          src={fallbackImage ?? videos[0]?.poster}
+          alt=""
+          aria-hidden="true"
+          class="absolute inset-0 z-5 h-full w-full object-cover transition-opacity duration-700"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      )
+    }
+
     {videos.map((video, index) => (
       <video
         class="carousel-video absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
         class:list={[{ "opacity-100": index === 0, "opacity-0 pointer-events-none": index !== 0 }]}
         poster={video.poster}
-        preload="auto"
+        preload={index === 0 ? "auto" : "metadata"}
         autoplay={index === 0}
         playsinline
         muted
@@ -186,14 +203,29 @@ const cardinalMarkers = [
     const carousel = document.getElementById("video-carousel");
     if (!carousel) return;
 
+    const fallback = document.getElementById("hero-media-fallback");
+
     state.videos = /** @type {HTMLVideoElement[]} */ (
       Array.from(carousel.querySelectorAll(".carousel-video"))
     );
 
     if (state.videos.length === 0) return;
 
+    const firstVideo = state.videos[0];
+    if (firstVideo && fallback) {
+      const hideFallback = () => {
+        fallback.classList.add("opacity-0", "pointer-events-none");
+      };
+
+      if (firstVideo.readyState >= 2) {
+        hideFallback();
+      } else {
+        firstVideo.addEventListener("loadeddata", hideFallback, { once: true });
+      }
+    }
+
     // Play first video
-    state.videos[0]?.play().catch(() => {
+    firstVideo?.play().catch(() => {
       // Autoplay might be blocked, user interaction required
     });
 
