@@ -1,4 +1,6 @@
 ---
+import { assetUrl } from '../lib/assets';
+
 interface Props {
   name?: string;
   src?: string;
@@ -21,8 +23,7 @@ const {
   label,
 } = Astro.props;
 
-const R2_BASE = "https://pub-77a3acdd380842359b5b76ca4772fe64.r2.dev/assets/public";
-const iconPath = src ?? (name ? `${R2_BASE}/icons/${name}.svg` : "");
+const iconPath = src ?? (name ? assetUrl(`/icons/${name}.svg`) : "");
 const resolvedMode = mode ?? (src ? "image" : "mask");
 const ariaHidden = decorative ? "true" : undefined;
 const ariaLabel = decorative ? undefined : (label ?? name ?? "icon");

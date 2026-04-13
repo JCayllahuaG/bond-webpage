@@ -1,8 +1,9 @@
 ---
 import Icon from './Icon.astro';
+import { assetUrl } from '../lib/assets';
 
 const footerContentWidth = "mx-auto w-[84vw] min-w-[80vw] max-w-384";
-const footerLogoSrc = "https://pub-77a3acdd380842359b5b76ca4772fe64.r2.dev/assets/public/icons/bond_logo.svg";
+const footerLogoSrc = assetUrl("/icons/bond_logo.svg");
 ---
 
 <footer class="bg-[#ececec] px-5 pb-4 pt-8 text-[#111] sm:px-8 md:px-10 lg:px-12">

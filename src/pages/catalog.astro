@@ -1,0 +1,185 @@
+---
+import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
+import HeroNavbar from '../components/HeroNavbar.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { assetUrl } from '../lib/assets';
+
+const families = [
+  {
+    name: 'Basicos',
+    description:
+      'Los polos basicos BOND estan confeccionados en 100% algodon 20/1 con corte boxy fit. Su gramaje ligero es ideal para el calor, y sus acabados reforzados garantizan mayor durabilidad.',
+    price: 'S/. 45 soles',
+    sizes: 'Talla L y M',
+    images: [assetUrl('/catalog/extracted/page-01-img-01.png'), assetUrl('/catalog/extracted/page-04-img-03.png')],
+  },
+  {
+    name: 'Camiseros',
+    description:
+      'Los polos camiseros BOND estan confeccionados en tela pique Lacoste, una textura fresca y transpirable ideal para el calor. Su diseno combina la elegancia de una camisa con la comodidad de un polo.',
+    price: 'S/. 75 soles',
+    sizes: 'Talla L y M',
+    images: [
+      assetUrl('/catalog/extracted/blue-t-shirt-with-tennis-2.png'),
+      assetUrl('/catalog/extracted/page-06-img-02.png'),
+      assetUrl('/catalog/extracted/page-07-img-03.png'),
+      assetUrl('/catalog/extracted/page-08-img-02.png'),
+    ],
+  },
+  {
+    name: 'Camisas',
+    description:
+      'Las camisas BOND estan confeccionadas en tela de lino, un material ligero y transpirable ideal para climas calidos, que aporta frescura, comodidad y una estetica natural y elegante.',
+    price: 'S/. 75 - S/. 85 soles',
+    sizes: 'Talla L y M',
+    images: [
+      assetUrl('/catalog/extracted/page-09-img-04.png'),
+      assetUrl('/catalog/extracted/shirt-beish-1.png'),
+      assetUrl('/catalog/extracted/page-11-img-03.png'),
+      assetUrl('/catalog/extracted/page-12-img-04.png'),
+    ],
+  },
+];
+---
+
+<Layout>
+  <section class="relative isolate min-h-screen overflow-hidden bg-[#0b0c0f] px-5 pb-10 pt-24 text-white sm:px-8 lg:px-12">
+    <img
+      src={assetUrl('/catalog/extracted/page-01-img-01.png')}
+      alt="Catalogo oficial Bond Fundamentals 2026"
+      class="absolute inset-0 -z-20 h-full w-full object-cover object-top md:object-[50%_12%]"
+      loading="eager"
+      decoding="async"
+    />
+    <div class="absolute inset-0 -z-10 bg-linear-to-b from-black/35 via-black/45 to-black/70"></div>
+
+    <HeroNavbar />
+    <div class="mx-auto w-full max-w-375">
+      <p class="text-[12px] font-semibold uppercase tracking-[0.24em] text-white/70">Catalogo oficial - 2026</p>
+      <h1 class="catalog-serif mt-3 text-[52px] uppercase leading-none sm:text-[72px] md:text-[92px]">BOND</h1>
+      <p class="mt-4 max-w-170 text-[16px] uppercase tracking-[0.22em] text-white/90">Fundamentals</p>
+      <p class="mt-10 max-w-170 text-[12px] font-medium uppercase leading-normal text-white/75 sm:text-[13px]">
+        Catalogo nativo para web: misma esencia editorial del PDF, adaptada para navegacion fluida en desktop y mobile.
+      </p>
+      <a
+        href={assetUrl('/catalog/CATALOGO BOND.pdf')}
+        target="_blank"
+        rel="noreferrer"
+        class="mt-8 inline-block border-b border-white/70 pb-1 text-[12px] font-semibold uppercase tracking-[0.16em] text-white transition-opacity hover:opacity-75"
+      >
+        Descargar PDF
+      </a>
+    </div>
+  </section>
+
+  <section class="bg-[#ececec] px-5 py-12 text-[#111] sm:px-8 sm:py-14 lg:px-12 lg:py-16">
+    <div class="mx-auto grid w-full max-w-375 gap-8 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-14">
+      <div class="max-w-185">
+        <p class="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#333]">Fundamentals</p>
+        <h2 class="catalog-serif mt-3 text-[34px] uppercase leading-none sm:text-[46px] md:text-[56px]">Quienes somos</h2>
+        <p class="mt-8 text-[12px] font-medium uppercase leading-normal text-[#2b2b2b] sm:text-[13px]">
+          BOND es una marca peruana que fusiona la esencia del streetwear con una estetica elegante y minimalista.
+          Nuestras prendas se desarrollan a partir de siluetas y cortes inspirados en el mundo de la moda.
+          Confeccionamos en Peru con materiales seleccionados como pique Lacoste, lino y algodon 20/1,
+          priorizando calidad, detalle y durabilidad para crear prendas atemporales.
+        </p>
+      </div>
+
+      <img
+        src={assetUrl('/catalog/extracted/page-02-img-01.png')}
+        alt="Editorial BOND de la seccion quienes somos"
+        class="h-auto w-full rounded-xl object-cover"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  </section>
+
+  {
+    families.map((family, index) => (
+      <section class="bg-[#ececec] px-5 py-10 text-[#111] sm:px-8 sm:py-12 lg:px-12 lg:py-14">
+        <div class="mx-auto w-full max-w-375">
+          <div class="grid gap-8 lg:grid-cols-[0.42fr_1fr] lg:gap-10">
+            <div class="lg:sticky lg:top-8 lg:self-start">
+              <p class="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#3a3a3a]">Fundamentals</p>
+              <h2 class="catalog-serif mt-2 text-[32px] uppercase leading-none sm:text-[44px] md:text-[52px]">{family.name}</h2>
+
+              <p class="mt-6 text-[12px] font-medium uppercase leading-normal text-[#2f2f2f] sm:text-[13px]">
+                {family.description}
+              </p>
+
+              <div class="mt-7 space-y-2 border-l border-[#c9c9c9] pl-4">
+                <p class="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#1e1e1e]">{family.price}</p>
+                <p class="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#3d3d3d]">Disponible</p>
+                <p class="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#3d3d3d]">{family.sizes}</p>
+              </div>
+            </div>
+
+            <div class:list={[
+              'grid gap-4 sm:grid-cols-2 sm:gap-5',
+              index === 0 ? 'lg:grid-cols-2' : 'lg:grid-cols-2',
+            ]}>
+              {family.images.map((image, imageIndex) => (
+                <figure class="overflow-hidden rounded-xl bg-[#e4e4e4]">
+                  <img
+                    src={image}
+                    alt={`${family.name} editorial ${imageIndex + 1}`}
+                    class:list={[
+                      'h-full w-full',
+                      family.name === 'Camiseros' && imageIndex === 2
+                        ? 'object-contain scale-[1.34] translate-y-[28%]'
+                        : family.name === 'Camiseros' && [0, 3].includes(imageIndex)
+                          ? 'object-contain scale-[1.34] translate-y-[16%]'
+                          : 'object-cover',
+                    ]}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="bg-[#ececec] px-5 py-12 text-[#101010] sm:px-8 sm:py-14 lg:px-12 lg:py-16">
+    <div class="mx-auto grid w-full max-w-375 gap-8 rounded-2xl border border-[#d4d4d4] bg-white p-6 sm:p-8 lg:grid-cols-2 lg:gap-10">
+      <div>
+        <p class="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#454545]">Bond</p>
+        <h2 class="catalog-serif mt-2 text-[30px] uppercase leading-none sm:text-[40px]">Metodos de pago</h2>
+        <ul class="mt-6 space-y-3 text-[12px] font-semibold uppercase tracking-[0.12em] text-[#232323] sm:text-[13px]">
+          <li>Yape / Plin</li>
+          <li>Transferencia y billeteras</li>
+          <li>Contraentrega</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col justify-end">
+        <p class="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#454545]">Contacto</p>
+        <p class="mt-2 text-[26px] font-semibold leading-none text-[#101010] sm:text-[34px]">931 019 120</p>
+        <a
+          href="https://instagram.com/bondperu__"
+          target="_blank"
+          rel="noreferrer"
+          class="mt-5 inline-block border-b border-[#222] pb-1 text-[12px] font-semibold uppercase tracking-[0.16em] text-[#222] transition-opacity hover:opacity-70"
+        >
+          @bondperu__
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <SiteFooter />
+</Layout>
+
+<style>
+  .catalog-serif {
+    font-family: "Bodoni Moda", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: 600;
+  }
+</style>

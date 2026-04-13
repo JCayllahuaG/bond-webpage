@@ -1,4 +1,6 @@
 ---
+import { assetUrl } from '../lib/assets';
+
 interface Props {
   title?: string;
   description?: string;
@@ -13,7 +15,7 @@ const {
   description = "FUNDAMENTALS IS OUR FIRST COLLECTION, OUR FOUNDATION, AND THE FIRST CHAPTER IN OUR STORY. THIS IS WHERE OUR VALUES AND VISION CONVERGE. WE FOCUS ON THE ELEMENTS THAT MAKE A BRAND TRULY SPECIAL AND UNFORGETTABLE. THE ESSENTIALS. OUR ESSENCE.",
   ctaLabel = "SHOP 2026 LOOK",
   ctaHref = "#",
-  imageSrc = "https://pub-77a3acdd380842359b5b76ca4772fe64.r2.dev/assets/public/images/generated_bond_image.png",
+  imageSrc = assetUrl("/images/generated_bond_image.png"),
   imageAlt = "2026 gorp-core editorial",
 } = Astro.props;
 ---

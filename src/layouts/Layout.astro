@@ -1,3 +1,6 @@
+---
+import { assetUrl } from '../lib/assets';
+---
 <!doctype html>
 <html lang="en">
 	<head>
@@ -6,8 +9,8 @@
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 		<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600;6..96,700&display=swap" rel="stylesheet" />
-		<link rel="icon" type="image/svg+xml" href="https://pub-77a3acdd380842359b5b76ca4772fe64.r2.dev/assets/public/favicon.svg" />
-		<link rel="icon" href="https://pub-77a3acdd380842359b5b76ca4772fe64.r2.dev/assets/public/favicon.ico" />
+		<link rel="icon" type="image/svg+xml" href={assetUrl("/favicon.svg")} />
+		<link rel="icon" href={assetUrl("/favicon.ico")} />
 		<meta name="generator" content={Astro.generator} />
 		<title>Astro Basics</title>
 	</head>

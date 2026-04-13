@@ -1,0 +1,98 @@
+---
+interface CatalogItem {
+  title: string;
+  description: string;
+  imageSrc: string;
+  imageAlt: string;
+  href?: string;
+  ctaLabel?: string;
+}
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  items: CatalogItem[];
+  downloadUrl?: string;
+}
+
+const {
+  title = "Catalog",
+  subtitle = "Explore key pieces from the latest Bond collection.",
+  items,
+  downloadUrl,
+} = Astro.props;
+---
+
+<section id="catalog-section" class="bg-[#ececec] px-5 py-10 text-[#101010] sm:px-8 sm:py-14 lg:px-12 lg:py-16">
+  <div class="mx-auto w-full max-w-375">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <h2 class="catalog-serif text-[30px] uppercase leading-none sm:text-[40px] md:text-[48px] lg:text-[56px]">
+          {title}
+        </h2>
+        <p class="mt-4 max-w-190 text-[12px] font-medium uppercase leading-[1.45] text-[#333] sm:text-[13px]">
+          {subtitle}
+        </p>
+      </div>
+
+      {
+        downloadUrl && (
+          <a
+            href={downloadUrl}
+            target="_blank"
+            rel="noreferrer"
+            class="inline-block border-b border-[#1f1f1f] pb-1 text-[13px] font-semibold uppercase tracking-wide text-[#1f1f1f] transition-opacity hover:opacity-70"
+          >
+            Download complete catalog
+          </a>
+        )
+      }
+    </div>
+
+    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        items.map((item) => (
+          <article class="group overflow-hidden rounded-xl border border-[#d8d8d8] bg-white">
+            <img
+              src={item.imageSrc}
+              alt={item.imageAlt}
+              class="aspect-[4/5] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+              loading="lazy"
+              decoding="async"
+            />
+
+            <div class="p-4 sm:p-5">
+              <h3 class="catalog-serif text-[22px] uppercase leading-none text-[#111] sm:text-[24px]">
+                {item.title}
+              </h3>
+
+              <p class="mt-3 text-[12px] font-medium uppercase leading-[1.45] text-[#333] sm:text-[13px]">
+                {item.description}
+              </p>
+
+              {
+                item.href && (
+                  <a
+                    href={item.href}
+                    class="mt-5 inline-block border-b border-[#202020] pb-1 text-[12px] font-semibold uppercase tracking-wide text-[#202020] transition-opacity hover:opacity-70"
+                  >
+                    {item.ctaLabel ?? "See details"}
+                  </a>
+                )
+              }
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .catalog-serif {
+    font-family: "Bodoni Moda", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: 600;
+  }
+</style>

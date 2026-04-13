@@ -5,20 +5,20 @@ import VideoCarousel from '../components/VideoCarousel.astro';
 import HeroNavbar from '../components/HeroNavbar.astro';
 import LookSection from '../components/LookSection.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import { assetUrl } from '../lib/assets';
 
-// Local hero videos from public/videos
 const heroVideos = [
   {
-    src: 'https://pub-77a3acdd380842359b5b76ca4772fe64.r2.dev/assets/public/videos/video_3.mp4'
+    src: assetUrl('/videos/video_3.mp4')
   },
   {
-    src: 'https://pub-77a3acdd380842359b5b76ca4772fe64.r2.dev/assets/public/videos/video_1.mp4'
+    src: assetUrl('/videos/video_1.mp4')
   },
   {
-    src: 'https://pub-77a3acdd380842359b5b76ca4772fe64.r2.dev/assets/public/videos/video_2.mp4'
+    src: assetUrl('/videos/video_2.mp4')
   },
   {
-    src: 'https://pub-77a3acdd380842359b5b76ca4772fe64.r2.dev/assets/public/videos/video_4.mp4'
+    src: assetUrl('/videos/video_4.mp4')
   }
 ];
 ---
