@@ -1,18 +1,84 @@
 ---
 import { assetUrl } from '../lib/assets';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  canonical?: string;
+  noindex?: boolean;
+  type?: 'website' | 'article';
+}
+
+const {
+  title = 'BOND',
+  description = 'BOND: streetwear elegante y minimalista. Descubre la coleccion Fundamentals y nuestro catalogo oficial.',
+  ogImage = assetUrl('/catalog/extracted/page-01-img-01.png'),
+  canonical,
+  noindex = false,
+  type = 'website',
+} = Astro.props;
+
+const canonicalUrl = canonical ?? Astro.url?.toString();
+const robots = noindex ? 'noindex, nofollow' : 'index, follow';
+const faviconVersion = '2';
+const faviconSvg = assetUrl('/favicon.svg');
+const faviconIco = assetUrl('/favicon.ico');
+
+function withVersion(url: string) {
+	return `${url}${url.includes('?') ? '&' : '?'}v=${faviconVersion}`;
+}
+
+const siteUrl = Astro.site?.toString();
+const orgUrl = siteUrl ?? canonicalUrl;
+const orgJsonLd = orgUrl
+	? {
+			'@context': 'https://schema.org',
+			'@type': 'Organization',
+			name: 'BOND',
+			url: orgUrl,
+			logo: assetUrl('/icons/bond_logo.svg'),
+			sameAs: ['https://instagram.com/bondperu__'],
+		}
+	: null;
+
+const websiteJsonLd = orgUrl
+	? {
+			'@context': 'https://schema.org',
+			'@type': 'WebSite',
+			name: 'BOND',
+			url: orgUrl,
+		}
+	: null;
 ---
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
+		<meta name="description" content={description} />
+		<meta name="robots" content={robots} />
+		<meta property="og:site_name" content="BOND" />
+		<meta property="og:type" content={type} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={ogImage} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
+		{orgJsonLd && <script type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />}
+		{websiteJsonLd && <script type="application/ld+json" set:html={JSON.stringify(websiteJsonLd)} />}
+		{canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+		{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 		<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600;6..96,700&display=swap" rel="stylesheet" />
-		<link rel="icon" type="image/svg+xml" href={assetUrl("/favicon.svg")} />
-		<link rel="icon" href={assetUrl("/favicon.ico")} />
+		<link rel="icon" type="image/svg+xml" href={withVersion(faviconSvg)} />
+		<link rel="icon" type="image/x-icon" href={withVersion(faviconIco)} />
+		<link rel="shortcut icon" href={withVersion(faviconIco)} />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>{title}</title>
 	</head>
 <body class="m-0 w-full overflow-x-hidden">
 		<slot />
