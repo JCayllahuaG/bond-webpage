@@ -5,7 +5,7 @@ import { assetUrl } from '../lib/assets';
 const navLinkClass = "text-base leading-7 font-light tracking-wide text-white/90 transition-transform duration-300 ease-out hover:-translate-y-0.5 hover:text-white";
 ---
 
-<header class="absolute inset-x-0 top-0 z-50 px-4 pt-5 sm:px-8">
+<header class="hero-navbar-safe absolute inset-x-0 top-0 z-50">
   <nav class="mx-auto flex w-full items-center justify-center text-white sm:hidden">
     <div class="flex items-center gap-7">
       <a href="/catalog" class={navLinkClass}>NEW</a>
@@ -30,3 +30,18 @@ const navLinkClass = "text-base leading-7 font-light tracking-wide text-white/90
     <a href="#" class={navLinkClass}>CART (0)</a>
   </nav>
 </header>
+
+<style>
+  .hero-navbar-safe {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 1.25rem);
+    padding-left: calc(env(safe-area-inset-left, 0px) + 1rem);
+    padding-right: calc(env(safe-area-inset-right, 0px) + 1rem);
+  }
+
+  @media (min-width: 640px) {
+    .hero-navbar-safe {
+      padding-left: calc(env(safe-area-inset-left, 0px) + 2rem);
+      padding-right: calc(env(safe-area-inset-right, 0px) + 2rem);
+    }
+  }
+</style>

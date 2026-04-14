@@ -32,7 +32,7 @@ const cardinalMarkers = [
 ];
 ---
 
-<div class="relative h-screen w-full overflow-hidden bg-black cursor-none" id="video-carousel">
+<div class="relative h-[100dvh] min-h-screen w-full overflow-hidden bg-black cursor-none" id="video-carousel">
   <!-- Video Container -->
   <div class="relative w-full h-full">
     {
@@ -100,7 +100,7 @@ const cardinalMarkers = [
   </div>
 
   <!-- Compass Wheel -->
-  <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-28 bg-linear-to-t from-black/70 via-black/30 to-transparent z-20">
+  <div id="compass-overlay" class="pointer-events-none absolute bottom-0 left-0 right-0 h-28 bg-linear-to-t from-black/70 via-black/30 to-transparent z-20">
     <div class="absolute inset-x-0 bottom-10 flex justify-center px-4">
       <div id="compass-viewport" class="compass-viewport relative w-full max-w-155 overflow-hidden">
         <div class="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-linear-to-r from-black/85 via-black/45 to-transparent"></div>
@@ -159,7 +159,7 @@ const cardinalMarkers = [
     </div>
 
     <!-- Center marker -->
-    <div class="absolute bottom-[1.15rem] left-1/2 -translate-x-1/2">
+    <div id="compass-center-marker" class="absolute bottom-[1.15rem] left-1/2 -translate-x-1/2">
       <Icon
         name="control-fill"
         size={12}
@@ -471,6 +471,16 @@ const cardinalMarkers = [
     initCarousel();
   }
 </script>
+
+<style>
+  #compass-overlay {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  #compass-center-marker {
+    bottom: calc(1.15rem + env(safe-area-inset-bottom, 0px));
+  }
+</style>
 
 <style>
   @media (pointer: fine) {
