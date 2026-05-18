@@ -55,6 +55,9 @@ export const siteCopy = {
 					items: ['Instagram', 'X.com', 'TikTok'],
 				},
 			],
+			socials: {
+				instagramUrl: 'https://www.instagram.com/bondperu__/',
+			},
 			communityTitle: 'Únete a nuestra comunidad',
 			communityDescription:
 				'Mantente al día con las últimas colecciones, colaboraciones y proyectos especiales.',
@@ -103,6 +106,9 @@ export const siteCopy = {
 					items: ['Instagram', 'X.com', 'TikTok'],
 				},
 			],
+			socials: {
+				instagramUrl: 'https://www.instagram.com/bondperu__/',
+			},
 			communityTitle: 'Join Our Community',
 			communityDescription:
 				'Stay up to date with the latest collections, collaborations, and special projects.',

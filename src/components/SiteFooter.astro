@@ -23,21 +23,30 @@ const content = siteCopy[lang].footer;
     <div class="lg:col-span-1">
         <h3 class="text-[14px] leading-none uppercase tracking-tight footer-serif">{content.brandSections[0].title}</h3>
         <ul class="mt-5 space-y-1.5 text-[13px] font-medium uppercase text-[#222]">
-          {content.brandSections[0].items.map((item) => <li><a href="#" class="transition-opacity hover:opacity-70">{item}</a></li>)}
+          {content.brandSections[0].items.map((item) => {
+            const href = typeof item === 'string' && item.toLowerCase().includes('instagram') ? content.socials?.instagramUrl ?? '#' : '#';
+            return <li><a href={href} target={href !== '#' ? '_blank' : undefined} rel={href !== '#' ? 'noopener noreferrer' : undefined} class="transition-opacity hover:opacity-70">{item}</a></li>
+          })}
         </ul>
     </div>
 
     <div class="lg:col-span-1">
         <h3 class="text-[14px] leading-none uppercase tracking-tight footer-serif">{content.brandSections[1].title}</h3>
         <ul class="mt-5 space-y-1.5 text-[13px] font-medium uppercase text-[#222]">
-          {content.brandSections[1].items.map((item) => <li><a href="#" class="transition-opacity hover:opacity-70">{item}</a></li>)}
+          {content.brandSections[1].items.map((item) => {
+            const href = typeof item === 'string' && item.toLowerCase().includes('instagram') ? content.socials?.instagramUrl ?? '#' : '#';
+            return <li><a href={href} target={href !== '#' ? '_blank' : undefined} rel={href !== '#' ? 'noopener noreferrer' : undefined} class="transition-opacity hover:opacity-70">{item}</a></li>
+          })}
         </ul>
     </div>
 
     <div class="lg:col-span-1">
         <h3 class="text-[14px] leading-none uppercase tracking-tight footer-serif">{content.brandSections[2].title}</h3>
         <ul class="mt-5 space-y-1.5 text-[13px] font-medium uppercase text-[#222]">
-          {content.brandSections[2].items.map((item) => <li><a href="#" class="transition-opacity hover:opacity-70">{item}</a></li>)}
+          {content.brandSections[2].items.map((item) => {
+            const href = typeof item === 'string' && item.toLowerCase().includes('instagram') ? content.socials?.instagramUrl ?? '#' : '#';
+            return <li><a href={href} target={href !== '#' ? '_blank' : undefined} rel={href !== '#' ? 'noopener noreferrer' : undefined} class="transition-opacity hover:opacity-70">{item}</a></li>
+          })}
         </ul>
     </div>
 
