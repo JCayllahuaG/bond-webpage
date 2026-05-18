@@ -1,29 +1,21 @@
 ---
-import '../styles/global.css';
-import Layout from '../layouts/Layout.astro';
-import VideoCarousel from '../components/VideoCarousel.astro';
-import HeroNavbar from '../components/HeroNavbar.astro';
-import LookSection from '../components/LookSection.astro';
-import SiteFooter from '../components/SiteFooter.astro';
-import { assetUrl } from '../lib/assets';
-import { resolveLangFromPathname, siteCopy } from '../lib/i18n';
+import '../../styles/global.css';
+import Layout from '../../layouts/Layout.astro';
+import VideoCarousel from '../../components/VideoCarousel.astro';
+import HeroNavbar from '../../components/HeroNavbar.astro';
+import LookSection from '../../components/LookSection.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import { assetUrl } from '../../lib/assets';
+import { siteCopy } from '../../lib/i18n';
 
-const lang = resolveLangFromPathname(Astro.url.pathname);
+const lang = 'en';
 const copy = siteCopy[lang];
 
 const heroVideos = [
-  {
-    src: assetUrl('/videos/video_3.mp4')
-  },
-  {
-    src: assetUrl('/videos/video_1.mp4')
-  },
-  {
-    src: assetUrl('/videos/video_2.mp4')
-  },
-  {
-    src: assetUrl('/videos/video_4.mp4')
-  }
+  { src: assetUrl('/videos/video_3.mp4') },
+  { src: assetUrl('/videos/video_1.mp4') },
+  { src: assetUrl('/videos/video_2.mp4') },
+  { src: assetUrl('/videos/video_4.mp4') },
 ];
 ---
 
@@ -34,12 +26,7 @@ const heroVideos = [
   ogImage={assetUrl('/images/generated_bond_image.png')}
 >
   <section data-scroll-section>
-    <VideoCarousel
-      lang={lang}
-      videos={heroVideos}
-      title="BOND"
-      subtitle={copy.home.heroSubtitle}
-    >
+    <VideoCarousel lang={lang} videos={heroVideos} title="BOND" subtitle={copy.home.heroSubtitle}>
       <HeroNavbar slot="navbar" lang={lang} pathname={Astro.url.pathname} />
     </VideoCarousel>
   </section>
@@ -85,8 +72,6 @@ const heroVideos = [
     (e) => {
       if (sections.length < 2) return;
 
-      // While a snap transition is running, consume wheel input so native scroll
-      // doesn't fight the section snapping behavior.
       if (scrollLocked) {
         e.preventDefault();
         wheelAccumulator = 0;
@@ -95,7 +80,6 @@ const heroVideos = [
 
       wheelAccumulator += e.deltaY;
 
-      // Ignore micro touchpad noise and only react to intentional gestures.
       if (Math.abs(wheelAccumulator) < 45) return;
 
       const direction = wheelAccumulator > 0 ? 1 : -1;

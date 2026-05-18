@@ -1,9 +1,17 @@
 ---
 import Icon from './Icon.astro';
 import { assetUrl } from '../lib/assets';
+import { siteCopy, type Lang } from '../lib/i18n';
+
+interface Props {
+  lang?: Lang;
+}
 
 const footerContentWidth = "mx-auto w-[84vw] min-w-[80vw] max-w-384";
 const footerLogoSrc = assetUrl("/icons/bond_logo.svg");
+
+const { lang = 'es' } = Astro.props;
+const content = siteCopy[lang].footer;
 ---
 
 <footer class="bg-[#ececec] px-5 pb-4 pt-8 text-[#111] sm:px-8 md:px-10 lg:px-12">
@@ -13,53 +21,44 @@ const footerLogoSrc = assetUrl("/icons/bond_logo.svg");
     </div>
 
     <div class="lg:col-span-1">
-        <h3 class="text-[14px] leading-none uppercase tracking-tight footer-serif">Our Brand</h3>
+        <h3 class="text-[14px] leading-none uppercase tracking-tight footer-serif">{content.brandSections[0].title}</h3>
         <ul class="mt-5 space-y-1.5 text-[13px] font-medium uppercase text-[#222]">
-          <li><a href="#" class="transition-opacity hover:opacity-70">About</a></li>
-          <li><a href="#" class="transition-opacity hover:opacity-70">Lookbook</a></li>
-          <li><a href="#" class="transition-opacity hover:opacity-70">Stories</a></li>
-          <li><a href="#" class="transition-opacity hover:opacity-70">Collaborations</a></li>
-          <li><a href="#" class="transition-opacity hover:opacity-70">Store Location</a></li>
+          {content.brandSections[0].items.map((item) => <li><a href="#" class="transition-opacity hover:opacity-70">{item}</a></li>)}
         </ul>
     </div>
 
     <div class="lg:col-span-1">
-        <h3 class="text-[14px] leading-none uppercase tracking-tight footer-serif">Information</h3>
+        <h3 class="text-[14px] leading-none uppercase tracking-tight footer-serif">{content.brandSections[1].title}</h3>
         <ul class="mt-5 space-y-1.5 text-[13px] font-medium uppercase text-[#222]">
-          <li><a href="#" class="transition-opacity hover:opacity-70">Track Order</a></li>
-          <li><a href="#" class="transition-opacity hover:opacity-70">Shipping & Returns</a></li>
-          <li><a href="#" class="transition-opacity hover:opacity-70">Size Guide</a></li>
-          <li><a href="#" class="transition-opacity hover:opacity-70">Sustainability</a></li>
+          {content.brandSections[1].items.map((item) => <li><a href="#" class="transition-opacity hover:opacity-70">{item}</a></li>)}
         </ul>
     </div>
 
     <div class="lg:col-span-1">
-        <h3 class="text-[14px] leading-none uppercase tracking-tight footer-serif">Socials</h3>
+        <h3 class="text-[14px] leading-none uppercase tracking-tight footer-serif">{content.brandSections[2].title}</h3>
         <ul class="mt-5 space-y-1.5 text-[13px] font-medium uppercase text-[#222]">
-          <li><a href="#" class="transition-opacity hover:opacity-70">Instagram</a></li>
-          <li><a href="#" class="transition-opacity hover:opacity-70">X.com</a></li>
-          <li><a href="#" class="transition-opacity hover:opacity-70">TikTok</a></li>
+          {content.brandSections[2].items.map((item) => <li><a href="#" class="transition-opacity hover:opacity-70">{item}</a></li>)}
         </ul>
     </div>
 
     <div class="lg:col-span-2">
-        <h3 class="text-[14px] leading-none uppercase tracking-tight footer-serif">Join Our Community</h3>
+        <h3 class="text-[14px] leading-none uppercase tracking-tight footer-serif">{content.communityTitle}</h3>
         <p class="mt-5 max-w-sm text-[13px] font-medium uppercase leading-5 text-[#444]">
-          Stay up to date with the latest collections, collaborations, and special projects.
+          {content.communityDescription}
         </p>
         <form class="mt-6 flex max-w-md gap-2" action="#" method="post">
           <label class="sr-only" for="footer-email">Email</label>
           <input
             id="footer-email"
             type="email"
-            placeholder="Enter your email"
+            placeholder={content.emailPlaceholder}
             class="h-10 flex-1 border border-[#cfcfcf] bg-transparent px-4 text-[13px] uppercase tracking-wide placeholder:text-[#666] focus:border-[#999] focus:outline-none"
           />
           <button
             type="submit"
             class="h-10 bg-[#111] px-5 text-[12px] font-semibold uppercase tracking-wide text-white transition-opacity hover:opacity-85"
           >
-            Subscribe
+            {content.subscribeLabel}
           </button>
         </form>
     </div>
@@ -67,7 +66,7 @@ const footerLogoSrc = assetUrl("/icons/bond_logo.svg");
 
   <div class:list={[footerContentWidth, "mt-16 flex flex-wrap items-center justify-between gap-4 text-[12px] uppercase text-[#555]"]}>
     <p>© 2026 • Bond</p>
-    <p class="text-right">Privacy & Policy • Terms of Sale</p>
+    <p class="text-right">{content.legal}</p>
   </div>
 
   <div class:list={[footerContentWidth, "mt-2 overflow-hidden"]}>

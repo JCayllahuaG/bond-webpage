@@ -1,24 +1,28 @@
 ---
-// Video carousel component with drag-to-swap functionality
+import HeroNavbar from './HeroNavbar.astro';
+import Icon from './Icon.astro';
+import { siteCopy, type Lang } from '../lib/i18n';
+
 interface Props {
   videos: Array<{
     src: string;
     poster?: string;
   }>;
+  lang?: Lang;
   title?: string;
   subtitle?: string;
   fallbackImage?: string;
 }
 
-import HeroNavbar from './HeroNavbar.astro';
-import Icon from './Icon.astro';
-
 const { 
   videos = [],
+  lang = 'es',
   title = "BLITZ",
   subtitle = "GEAR THAT DOESN'T BREAK",
   fallbackImage,
 } = Astro.props;
+
+const carouselCopy = siteCopy[lang].carousel;
 
 const totalTicks = 73;
 const majorEvery = 6;
@@ -32,7 +36,7 @@ const cardinalMarkers = [
 ];
 ---
 
-<div class="relative h-[100dvh] min-h-screen w-full overflow-hidden bg-black cursor-none" id="video-carousel">
+<div class="relative h-dvh min-h-screen w-full overflow-hidden bg-black cursor-none" id="video-carousel">
   <!-- Video Container -->
   <div class="relative w-full h-full">
     {
@@ -86,14 +90,14 @@ const cardinalMarkers = [
     <button
       class="pointer-events-auto text-white text-4xl opacity-20 hover:opacity-100 transition-opacity"
       id="prev-btn"
-      aria-label="Previous video"
+      aria-label={carouselCopy.prevLabel}
     >
       ‹
     </button>
     <button
       class="pointer-events-auto text-white text-4xl opacity-20 hover:opacity-100 transition-opacity"
       id="next-btn"
-      aria-label="Next video"
+      aria-label={carouselCopy.nextLabel}
     >
       ›
     </button>

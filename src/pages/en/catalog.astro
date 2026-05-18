@@ -1,13 +1,13 @@
 ---
-import '../styles/global.css';
-import Layout from '../layouts/Layout.astro';
-import HeroNavbar from '../components/HeroNavbar.astro';
-import SizeGuideSection from '../components/SizeGuideSection.astro';
-import SiteFooter from '../components/SiteFooter.astro';
-import { assetUrl } from '../lib/assets';
-import { resolveLangFromPathname, catalogCopy } from '../lib/i18n';
+import '../../styles/global.css';
+import Layout from '../../layouts/Layout.astro';
+import HeroNavbar from '../../components/HeroNavbar.astro';
+import SizeGuideSection from '../../components/SizeGuideSection.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import { assetUrl } from '../../lib/assets';
+import { catalogCopy } from '../../lib/i18n';
 
-const lang = resolveLangFromPathname(Astro.url.pathname);
+const lang = 'en';
 const copy = catalogCopy[lang];
 const families = copy.families;
 const sizeGuides = copy.sizeGuides;
@@ -103,9 +103,7 @@ const sizeGuides = copy.sizeGuides;
               index === 0 ? 'lg:grid-cols-2' : 'lg:grid-cols-2',
             ]}>
               {family.images.map((image, imageIndex) => (
-                <figure
-                  class="overflow-hidden rounded-xl bg-[#e4e4e4]"
-                >
+                <figure class="overflow-hidden rounded-xl bg-[#e4e4e4]">
                   <img
                     src={assetUrl(image.src)}
                     alt={image.alt}
@@ -317,47 +315,10 @@ const sizeGuides = copy.sizeGuides;
   document.querySelectorAll("[data-open-size-guide]").forEach((button) => {
     button.addEventListener("click", () => {
       const guideKey = button.getAttribute("data-open-size-guide");
-      if (!guideKey || !guideDialog) return;
-
       renderGuide(guideKey);
-      guideDialog.showModal();
+      guideDialog?.showModal();
     });
   });
 
-  guideClose?.addEventListener("click", () => {
-    guideDialog?.close();
-  });
-
-  guideDialog?.addEventListener("click", (event) => {
-    const rect = guideDialog.getBoundingClientRect();
-    const clickedBackdrop =
-      event.clientX < rect.left ||
-      event.clientX > rect.right ||
-      event.clientY < rect.top ||
-      event.clientY > rect.bottom;
-
-    if (clickedBackdrop) {
-      guideDialog.close();
-    }
-  });
+  guideClose?.addEventListener("click", () => guideDialog?.close());
 </script>
-
-<style>
-  .catalog-serif {
-    font-family: "Bodoni Moda", serif;
-    font-optical-sizing: auto;
-    font-style: normal;
-    font-weight: 600;
-  }
-
-  .size-guide-dialog::backdrop {
-    background: rgba(10, 10, 10, 0.5);
-    backdrop-filter: blur(2px);
-  }
-
-  .size-guide-dialog[open] {
-    position: fixed;
-    inset: 0;
-    margin: auto;
-  }
-</style>

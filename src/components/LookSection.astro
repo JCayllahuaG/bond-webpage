@@ -1,48 +1,47 @@
 ---
 import { assetUrl } from '../lib/assets';
+import { localizedPath, siteCopy, type Lang } from '../lib/i18n';
 
 interface Props {
-  title?: string;
-  description?: string;
-  ctaLabel?: string;
-  ctaHref?: string;
+  lang?: Lang;
   imageSrc?: string;
   imageAlt?: string;
 }
 
 const {
-  title = "2026 LOOK: FUNDAMENTALS",
-  description = "FUNDAMENTALS IS OUR FIRST COLLECTION, OUR FOUNDATION, AND THE FIRST CHAPTER IN OUR STORY. THIS IS WHERE OUR VALUES AND VISION CONVERGE. WE FOCUS ON THE ELEMENTS THAT MAKE A BRAND TRULY SPECIAL AND UNFORGETTABLE. THE ESSENTIALS. OUR ESSENCE.",
-  ctaLabel = "SHOP 2026 LOOK",
-  ctaHref = "/catalog",
+  lang = 'es',
   imageSrc = assetUrl("/images/generated_bond_image.png"),
-  imageAlt = "2026 gorp-core editorial",
+  imageAlt,
 } = Astro.props;
+
+const content = siteCopy[lang].look;
+const resolvedImageAlt = imageAlt ?? content.imageAlt;
+const resolvedCtaHref = localizedPath(content.ctaHref, lang);
 ---
 
 <section id="look-section" class="bg-[#ececec] px-5 py-10 sm:px-8 sm:py-14 lg:px-12 lg:py-16">
   <div class="mx-auto grid w-full max-w-375 gap-8 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-14">
     <div class="max-w-190">
       <h2 class="footer-serif text-[30px] uppercase leading-none text-[#111] sm:text-[40px] md:text-[48px] lg:text-[56px]">
-        {title}
+        {content.title}
       </h2>
 
       <p class="mt-8 max-w-190 text-[13px] font-medium uppercase leading-[1.35] text-[#2a2a2a] sm:text-[14px]">
-        {description}
+        {content.description}
       </p>
 
       <a
-        href={ctaHref}
+        href={resolvedCtaHref}
         class="mt-9 inline-block border-b border-[#2b2b2b] pb-1 text-[18px] font-medium uppercase tracking-tight text-[#202020] transition-opacity hover:opacity-70"
       >
-        {ctaLabel}
+        {content.ctaLabel}
       </a>
     </div>
 
     <div>
       <img
         src={imageSrc}
-        alt={imageAlt}
+        alt={resolvedImageAlt}
         class="h-auto w-full rounded-lg object-cover"
         loading="lazy"
         decoding="async"

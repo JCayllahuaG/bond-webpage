@@ -1,5 +1,6 @@
 ---
 import { assetUrl } from '../lib/assets';
+import { defaultLang, normalizeLang, type Lang } from '../lib/i18n';
 
 interface Props {
   title?: string;
@@ -8,6 +9,7 @@ interface Props {
   canonical?: string;
   noindex?: boolean;
   type?: 'website' | 'article';
+	lang?: Lang;
 }
 
 const {
@@ -17,7 +19,10 @@ const {
   canonical,
   noindex = false,
   type = 'website',
+	lang = defaultLang,
 } = Astro.props;
+
+const resolvedLang = normalizeLang(lang);
 
 const canonicalUrl = canonical ?? Astro.url?.toString();
 const robots = noindex ? 'noindex, nofollow' : 'index, follow';
@@ -52,7 +57,7 @@ const websiteJsonLd = orgUrl
 	: null;
 ---
 <!doctype html>
-<html lang="en">
+<html lang={resolvedLang}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
@@ -79,6 +84,53 @@ const websiteJsonLd = orgUrl
 		<link rel="shortcut icon" href={withVersion(faviconIco)} />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<script define:vars={{ defaultLang }}>
+			(() => {
+				const storageKey = 'bond-language';
+				const currentUrl = new URL(window.location.href);
+				const pathname = currentUrl.pathname;
+				const requestedLang = pathname === '/en' || pathname.startsWith('/en/')
+					? 'en'
+					: currentUrl.searchParams.get('lang') === 'en'
+						? 'en'
+						: currentUrl.searchParams.get('lang') === 'es'
+							? 'es'
+							: null;
+				const storedLang = window.localStorage.getItem(storageKey);
+				const resolvedLang = requestedLang === 'en' || requestedLang === 'es'
+					? requestedLang
+					: storedLang === 'en'
+						? 'en'
+						: defaultLang;
+
+				const basePath = pathname === '/en' ? '/' : pathname.startsWith('/en/') ? pathname.slice(3) : pathname;
+				const shouldUseEnglishPath = resolvedLang === 'en';
+				const targetPath = shouldUseEnglishPath
+					? basePath === '/' ? '/en' : `/en${basePath}`
+					: basePath;
+
+				if (pathname !== targetPath) {
+					currentUrl.pathname = targetPath;
+					currentUrl.search = '';
+					window.localStorage.setItem(storageKey, resolvedLang);
+					window.location.replace(currentUrl.toString());
+					return;
+				}
+
+				window.localStorage.setItem(storageKey, resolvedLang);
+				document.documentElement.lang = resolvedLang;
+
+				document.addEventListener('click', (event) => {
+					const target = event.target instanceof Element ? event.target.closest('[data-language-option]') : null;
+					if (!target) return;
+
+					const value = target.getAttribute('data-language-option');
+					if (value === 'en' || value === 'es') {
+						window.localStorage.setItem(storageKey, value);
+					}
+				});
+			})();
+		</script>
 	</head>
 <body class="m-0 w-full overflow-x-hidden">
 		<slot />

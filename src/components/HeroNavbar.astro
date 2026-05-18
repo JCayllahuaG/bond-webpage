@@ -1,33 +1,64 @@
 ---
 import Icon from './Icon.astro';
 import { assetUrl } from '../lib/assets';
+import { languageLabels, localizedPath, siteCopy, type Lang } from '../lib/i18n';
+
+interface Props {
+  lang?: Lang;
+  pathname?: string;
+}
+
+const { lang = 'es', pathname = '/' } = Astro.props;
+const content = siteCopy[lang].nav;
+const spanishLanguage = languageLabels.es;
+const englishLanguage = languageLabels.en;
 
 const navLinkClass = "text-base leading-7 font-light tracking-wide text-white/90 transition-transform duration-300 ease-out hover:-translate-y-0.5 hover:text-white";
+const languageLinkClass = "text-[11px] font-semibold uppercase tracking-[0.18em] text-white/80 transition-opacity hover:opacity-100";
 ---
 
 <header class="hero-navbar-safe absolute inset-x-0 top-0 z-50">
   <nav class="mx-auto flex w-full items-center justify-center text-white sm:hidden">
-    <div class="flex items-center gap-7">
-      <a href="/catalog" class={navLinkClass}>NEW</a>
-      <a href="/catalog" class={navLinkClass}>CATALOG</a>
-      <a href="/catalog" class={navLinkClass}>SHOP</a>
+    <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+      <a href={localizedPath('/catalog', lang)} class={navLinkClass}>{content.mobile[0]}</a>
+      <a href={localizedPath('/catalog', lang)} class={navLinkClass}>{content.mobile[1]}</a>
+      <a href={localizedPath('/catalog', lang)} class={navLinkClass}>{content.mobile[2]}</a>
+      <a href={localizedPath(pathname, 'es')} data-language-option="es" class={languageLinkClass} aria-label={spanishLanguage.label} aria-current={lang === 'es' ? 'page' : undefined}>
+        {spanishLanguage.code}
+      </a>
+      <span class="text-[11px] text-white/35">/</span>
+      <a href={localizedPath(pathname, 'en')} data-language-option="en" class={languageLinkClass} aria-label={englishLanguage.label} aria-current={lang === 'en' ? 'page' : undefined}>
+        {englishLanguage.code}
+      </a>
     </div>
   </nav>
 
   <nav class="mx-auto hidden w-full items-center justify-between text-white sm:flex">
     <div class="flex items-center gap-7 sm:gap-8 md:gap-10">
-      <a href="/" class="flex items-center" aria-label="Bond home">
+      <a href={localizedPath('/', lang)} class="flex items-center" aria-label="Bond home">
         <Icon src={assetUrl('/icons/bond_logo.svg')} mode="image" size={28} class="opacity-95 brightness-0 invert" decorative={false} label="Bond" />
       </a>
-      <a href="/catalog" class={navLinkClass}>NEW</a>
-      <a href="/catalog" class={navLinkClass}>CATALOG</a>
-      <a href="/catalog" class={navLinkClass}>SHOP ALL</a>
-      <a href="#" class={`hidden sm:inline ${navLinkClass}`}>JOURNAL</a>
-      <a href="#" class={`hidden sm:inline ${navLinkClass}`}>STORIES</a>
-      <a href="#" class={`hidden sm:inline ${navLinkClass}`}>SEARCH</a>
+      <a href={localizedPath('/catalog', lang)} class={navLinkClass}>{content.desktop[0]}</a>
+      <a href={localizedPath('/catalog', lang)} class={navLinkClass}>{content.desktop[1]}</a>
+      <a href={localizedPath('/catalog', lang)} class={navLinkClass}>{content.desktop[2]}</a>
+      <a href="#" class={`hidden sm:inline ${navLinkClass}`}>{content.desktop[3]}</a>
+      <a href="#" class={`hidden sm:inline ${navLinkClass}`}>{content.desktop[4]}</a>
+      <a href="#" class={`hidden sm:inline ${navLinkClass}`}>{content.desktop[5]}</a>
     </div>
 
-    <a href="#" class={navLinkClass}>CART (0)</a>
+    <div class="flex items-center gap-5">
+      <div class="flex items-center gap-2">
+        <a href={localizedPath(pathname, 'es')} data-language-option="es" class={languageLinkClass} aria-label={spanishLanguage.label} aria-current={lang === 'es' ? 'page' : undefined}>
+          {spanishLanguage.code}
+        </a>
+        <span class="text-[11px] text-white/35">/</span>
+        <a href={localizedPath(pathname, 'en')} data-language-option="en" class={languageLinkClass} aria-label={englishLanguage.label} aria-current={lang === 'en' ? 'page' : undefined}>
+          {englishLanguage.code}
+        </a>
+      </div>
+
+      <a href="#" class={navLinkClass}>{content.cart}</a>
+    </div>
   </nav>
 </header>
 
